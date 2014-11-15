@@ -120,8 +120,6 @@ AddrSpace::AddrSpace(OpenFile *executable)
 			noffH.initData.size, noffH.initData.inFileAddr);
     }
 
- #else
-
  #endif
 
 }
