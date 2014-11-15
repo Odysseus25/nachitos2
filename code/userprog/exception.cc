@@ -533,7 +533,7 @@ void ExceptionHandler(ExceptionType which)
                 break;
           }
        break;
-       case PageFaulEception:
+       case PageFaultEception:
             DEBUG('p', "Ocurrio un page fault eception\n");
             break;
        default:
