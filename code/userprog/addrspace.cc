@@ -192,3 +192,35 @@ void AddrSpace::RestoreState()
              machine->pageTableSize = numPages;
     #endif
 }
+
+
+/**
+ * 	Algoritmo encargado de indicar cual es la pagina que puede utilizar
+ * 	y libera los demas espacios en el pagetable para otro proceso que recurra
+ * 	a la tabla. El metodo indica la pagina que debe ser movida de memoria a disco,
+ * 	retornando el indice de la siguiente pagina utilizable en pagetable.
+ * 
+**/
+
+int AddrSpace::indicadorPaginaPageTable(int indicador, int dimension){
+	int temporal = indicador + 1;
+	bool detener = false;
+	do{
+		while(temporal < dimension && detener == false){
+			if(pageTable[temporal].use == false){
+				pageTable[temporal].use == true;	// Si el bit esta apagado se enciende y 
+				detener = true;			       // detiene el ciclo, obteniendo la posicion
+			}else{
+				pageTable[temporal].use == false;	// Si el bit esta encendido, lo apaga para
+				++temporal;				// el proceso que llegue despues y continua
+			}						// buscando un bit apagado hasta el final 
+		}							// de la memoria
+		if(detener == false){
+			temporal = 0;
+		}
+		
+	}while(detener == false);					// Ciclo hasta hallar un bit apagado
+	return temporal;
+}
+
+
