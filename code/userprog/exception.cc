@@ -533,9 +533,13 @@ void ExceptionHandler(ExceptionType which)
                 break;
           }
        break;
-       case PageFaultEception:
-            DEBUG('p', "Ocurrio un page fault eception\n");
+
+       case PageFaultException:
+            DEBUG('p', "Ocurrio un page fault exception\n");
+            unsigned int dirPF = machine->ReadRegister(39); //direcccion de la pagina q dio problema
+            currentThread->space->Load(dirPF);
             break;
+
        default:
           printf( "Unexpected exception %d\n", which );
           ASSERT(FALSE);

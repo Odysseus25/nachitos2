@@ -222,3 +222,7 @@ int AddrSpace::indicadorPaginaPageTable(int indicador, int dimension){ //algorit
 	}while(detener == false);					// Ciclo hasta hallar un bit apagado
 	return temporal;
 }
+
+void AddreSpace::Load(){
+	
+}
