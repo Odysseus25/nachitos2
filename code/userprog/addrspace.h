@@ -36,6 +36,8 @@ class AddrSpace {
   private:
     TranslationEntry *pageTable;	// Assume linear page table translation
 					// for now!
+    TranslationEntry *coreMap;		// Se crea un coreMap para que mapee las 
+    					// paginas de fisicas a virtuales
     unsigned int numPages;		// Number of pages in the virtual 
 					// address space
 };
