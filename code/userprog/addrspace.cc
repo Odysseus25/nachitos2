@@ -89,6 +89,7 @@ AddrSpace::AddrSpace(OpenFile *executable)
     DEBUG('a', "Initializing address space, num pages %d, size %d\n",
 					numPages, size);
 // first, set up the translation
+    coreMap = new TranslationEntry[numPages];		// Contiene las paginas invertidas
     pageTable = new TranslationEntry[numPages];
     for (i = 0; i < numPages; i++) {
 	pageTable[i].virtualPage = i;	// for now, virtual page # = phys page #
@@ -229,8 +230,21 @@ int AddrSpace::indicadorPaginaPageTable(int indicador, int dimension){ //algorit
 **/
 
 int AddrSpace::analisisDePagina(int indice){
-	
-	
+	int enMemoriaSwap;
+	if(pageTable[coreMap[indice].virtualPage].dirty != true){		// Condicional que verifica si la pagina esta sucia o no
+		pageTable[coreMap[indice].virtualPage].physicalPage = -1;
+		pageTable[coreMap[indice].virtualPage].valid = false;		// Se invalida la pagina 
+		coreMap[find].virtualPage = -1;
+		
+	}else{
+		OpenFile *manejaSwap = fileSystem->Open("Realiza Swap");	
+		enMemoriaSwap = mybitSwap->Find();
+		manejaSwap->WriteAt(&(machine->mainMemory[find*PageSize]), PageSize, enMemoriaSwap*PageSize);	// Se escribe en memoria 	
+		pageTable[coreMap[indice].virtualPage].physicalPage = enMemoriaSwap;		// Los valores son actualizados
+		pageTable[coreMap[indice].virtualPage].valid = false;				// Se invalida la pagina
+		coreMap[indice].virtualPage = -1;
+	}
+	return indice;
 }
 
 
