@@ -222,3 +222,31 @@ int AddrSpace::indicadorPaginaPageTable(int indicador, int dimension){ //algorit
 	}while(detener == false);					// Ciclo hasta hallar un bit apagado
 	return temporal;
 }
+
+/**
+ * 	Metodo encargado de analizar si la pagina obtenida por el indice retornado en 
+ * 	indicadorPaginaPageTable se encuentra en estado dirty (se realiza un swap) o no. 
+**/
+
+int AddrSpace::analisisDePagina(int indice){
+	
+	
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
