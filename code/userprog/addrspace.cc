@@ -225,8 +225,48 @@ int AddrSpace::indicadorPaginaPageTable(int indicador, int dimension){ //algorit
 }
 
 <<<<<<< HEAD
-void AddreSpace::Load(){
+void AddreSpace::Load(int dirPF){
+	NoffHeader noffH;
+	unsigned int pagFaltante = (unsigned) dirPF/PageSize; // se obtiene la direccion de la pag que falta
+	if(pageTable[pagFaltante].dirty == true && pageTable[pagFaltante].valid == false){ //busca la pag que falta con la direccion que se sutrajo, y verifica si esta sucia. Si lo esta, se debe de traer la pag de nuevo desde el disco
+		DEBUG('a', "La pagina esta sucia, se trae desde el disco \n");
+		OpenFile * swap = fileSystem->Open("SWAP");
+		int encontrar = mybit.->Find();
+		swap->ReadAt(&(machine->mainMemory[pagFaltante*PageSize]), PageSize, encontrar*PageSize); //lee la pag que falta del swap y la guarda
 
+	pageTable[pagFaltante].physicalPage = encontrar;	//actualiza el pageTable
+	pageTable[pagFaltante].valid = true;
+	coreMap[encontar].virtualPage = pagFaltante;
+	}
+	else{	//la pag esta limpia
+		//Aqui se debe de determinar si la pag contiene codigo o datos inicializados
+		//Se lee el archivo ejecutable por su nombre y se verifica su encabezado.
+		//Se recupera el tamaño de los semegentos de codigo y datos para calcular las
+		//paginas que ocupan
+
+		unsigned int pagSegmento;
+		OpenFile *ejecutable = fileSystem->Open(currentThread->filename); //se abre el archivo
+		ejecutable = ReadAt((char *)&noffH, sizeof(noffH), 0);
+		pagSegmento = divRound((noffH.code.size + noffH.iniData.size), PageSize); //calcula el numero de pags que ocupa el segmento
+		DEBUG('a', "Num de pags del segmneto: %i pagFaltante: %i \n", pagSemento, pagFaltante);
+		//Ahora se debe insertar esta pag en el frame. Se busca si existe uno libre
+		int encontrar = mybit.->Find();
+		encontrar = VerficarMemoria(encontrar); // metodo auxiliar******metodo de macho********
+
+		if(pagFaltante <= pagSegmento){ //si la pag faltante es menor a las pags necesarias, se extraen del ejecutable.
+			ejecutable->ReadAt(&(machine->mainMemory[find*PageSize]), PageSize, noffH.code.inFileAddr+PageSize*pagFaltante); //se lee del ejecutable
+		}
+		//se debe crear una pag nueva, en cualquier caso
+		pageTable[pagFaltante].physicalPage = encontrar;
+		pageTable[pagFaltante].valid = true;
+		coreMap[encontrar].virtualPage = pagFaltante;
+	}
+	//Finalmente se actualiza el TLB
+		machine->tlb[/*metodo second chance*/].virtualPage = pageTable[pagFaltante].virtualPage;
+		machine->tlb[/*metodo*/].physicalPage = pageTable[pagFaltante].physicalPage ;
+		machine->tlb[/*metodo*/].valid = true;
+		machine->tlb[/*metodo*/].use = pageTable[pagFaltante].use;
+		machine->tlb[/*metodo*/].dirty = pageTable[pagFaltante].dirty;
 }
 =======
 /**
