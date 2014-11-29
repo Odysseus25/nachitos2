@@ -225,6 +225,9 @@ int AddrSpace::indicadorPaginaPageTable(int indicador, int dimension){ //algorit
 }
 
 <<<<<<< HEAD
+
+int indiceTLB = 0;
+
 void AddreSpace::Load(int dirPF){
 	NoffHeader noffH;
 	unsigned int pagFaltante = (unsigned) dirPF/PageSize; // se obtiene la direccion de la pag que falta
@@ -251,7 +254,7 @@ void AddreSpace::Load(int dirPF){
 		DEBUG('a', "Num de pags del segmneto: %i pagFaltante: %i \n", pagSemento, pagFaltante);
 		//Ahora se debe insertar esta pag en el frame. Se busca si existe uno libre
 		int encontrar = mybit.->Find();
-		encontrar = VerficarMemoria(encontrar); // metodo auxiliar******metodo de macho********
+		encontrar = analisisDePagina(encontrar); //revisa si la pag q trajo esta sucia o no
 
 		if(pagFaltante <= pagSegmento){ //si la pag faltante es menor a las pags necesarias, se extraen del ejecutable.
 			ejecutable->ReadAt(&(machine->mainMemory[find*PageSize]), PageSize, noffH.code.inFileAddr+PageSize*pagFaltante); //se lee del ejecutable
@@ -262,11 +265,12 @@ void AddreSpace::Load(int dirPF){
 		coreMap[encontrar].virtualPage = pagFaltante;
 	}
 	//Finalmente se actualiza el TLB
-		machine->tlb[/*metodo second chance*/].virtualPage = pageTable[pagFaltante].virtualPage;
-		machine->tlb[/*metodo*/].physicalPage = pageTable[pagFaltante].physicalPage ;
-		machine->tlb[/*metodo*/].valid = true;
-		machine->tlb[/*metodo*/].use = pageTable[pagFaltante].use;
-		machine->tlb[/*metodo*/].dirty = pageTable[pagFaltante].dirty;
+		machine->tlb[indicadorPaginaPageTable(encontrar, PageSize)].virtualPage = pageTable[pagFaltante].virtualPage;
+		machine->tlb[indicadorPaginaPageTable(encontrar, PageSize)].physicalPage = pageTable[pagFaltante].physicalPage;
+		machine->tlb[indicadorPaginaPageTable(encontrar, PageSize)].valid = true;
+		machine->tlb[indicadorPaginaPageTable(encontrar, PageSize)].use = pageTable[pagFaltante].use;
+		machine->tlb[indicadorPaginaPageTable(encontrar, PageSize)].dirty = pageTable[pagFaltante].dirty;
+		indiceTLB = indicadorPaginaPageTable(indiceTLB, TLBSize);
 }
 =======
 /**
